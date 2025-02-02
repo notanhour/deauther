@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+.titleWrapper {
+    width: 100%;
+    background-color: #d4d4d4;
+    border-bottom: 2px solid #7c7c7c;
+}
+h1 {
+    color: white;
+    text-align: center;
+}
+.mainContainer {
+    display: flex;
+    width: 100vw;
+    height: 100%;
+}
+.sidebar {
+    width: 320px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+    border-right: 2px solid #7c7c7c;
+}
+.btnContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px 0;
+}
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+}
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+label {
+    margin-bottom: 10px;
+    display: block;
+}
+.mainContent {
+    flex-grow: 1;
+    padding: 20px;
+}
+pre {
+    background: #f4f4f4;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+/* Медиазапрос для мобильных устройств */
+@media (max-width: 768px) {
+    .mainContainer {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: min-content;
+        padding-bottom: 5px;
+        border: none;
+    }
+    .mainContent {
+        margin-left: 0;
+    }
+}

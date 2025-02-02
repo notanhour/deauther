@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Deauth Tool</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="titleWrapper">
+        <h1>Wi-Fi Deauth Tool</h1>
+    </div>
+    <div class="mainContainer">
+        <!-- Боковая панель с кнопками и настройками -->
+        <div class="sidebar">
+            <div class="btnContainer">
+                <button id="scanBtn" onclick="startScan()">Начать сканирование</button>
+                <button id="deauthBtn" onclick="toggleDeauth()">Начать атаку</button>
+                <button id="monitorBtn" onclick="toggleMonitor()">Переключить в monitor mode</button>
+            </div>
+            <div class="inputContainer">
+                <div class="inputGroup">
+                    <label for="scanTime">Время сканирования: 
+                        <input type="number" id="scanTimeInput" value="20" min="5" max="60">
+                        <span>сек</span>
+                    </label>
+                    <input type="range" id="scanTimeSlider" name="scanTimeSlider" min="5" max="60" value="20">
+                </div>
+                <div class="inputGroup">
+                    <label for="targetNetworks">Сети [через запятую и пробел]</label>
+                    <input type="text" id="targetNetworks" name="targetNetworks">
+                </div>
+                <div class="inputGroup">
+                    <label for="targetClients">Клиенты [через запятую и пробел]</label>
+                    <input type="text" id="targetClients" name="targetClients">
+                </div>
+            </div>
+        </div>
+
+        <!-- Основная часть для вывода данных -->
+        <div class="mainContent">
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+    <script src="../static/js/script.js"></script>
+</body>
+</html>
