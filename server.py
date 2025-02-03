@@ -2,10 +2,7 @@ from flask import Flask, render_template, request, jsonify, Response
 import subprocess
 import signal
 import os
-import logging
-
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+import sys
 
 app = Flask(__name__)
 
@@ -121,4 +118,7 @@ def stream():
     return Response(generate(), mimetype='text/event-stream')
 
 if __name__ == '__main__':
+    print(f"Server running on localhost:5000")
+    sys.stdout = open(os.devnull, 'w')
+    sys.stderr = open(os.devnull, 'w')
     app.run(host='0.0.0.0', port=5000)
