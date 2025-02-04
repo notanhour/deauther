@@ -19,8 +19,8 @@ def index():
 # Запуск сканирования
 @app.route('/start_scan', methods=['POST'])
 def start_scan():
+    global scan_process
     try:
-        global scan_process
         data = request.json
         scan_time = data.get('scanTime', '20')
         # Запуск bash-скрипта в асинхроне
@@ -34,13 +34,12 @@ def start_scan():
 
 # Атака
 @app.route('/toggle_deauth', methods=['POST'])
-def start_deauth():
+def toggle_deauth():
+    global deauth_process
     try:
-        global deauth_process
         if deauth_process is not None:
             os.kill(deauth_process.pid, signal.SIGINT)
             deauth_process = None
-            return jsonify({"status": "success"})
         else:
             data = request.json
             target_networks = data.get('targetNetworks', '')
@@ -50,47 +49,51 @@ def start_deauth():
                 ['sudo', './wifi.sh', '-m', 'deauth', '-n', target_networks, '-c', target_clients],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
-            return jsonify({"status": "success"})
+        return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error"})
     
 # Переключение monitor mode
 @app.route('/toggle_monitor', methods=['POST'])
 def toggle_monitor():
+    global monitor_process
     try:
-        global monitor_process
         check = subprocess.run(['iw', 'dev'], capture_output=True, text=True)
         if "monitor" in check.stdout:
             monitor_process = subprocess.Popen(
                 ['sudo', './monitor.sh', 'stop'],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
-            return jsonify({"status": "success"})
         else:
             monitor_process = subprocess.Popen(
                 ['sudo', './monitor.sh', 'start'],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
-            return jsonify({"status": "success"})
+        return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error"})
     
 @app.route('/check_status', methods=['GET'])
 def check_status():
+    global scan_process, deauth_process, monitor_process
     try:
         check = subprocess.run(['iw', 'dev'], capture_output=True, text=True)
-        is_monitor = "monitor" in check.stdout
+        in_monitor = "monitor" in check.stdout
 
-        is_deauth = deauth_process is not None
-
-        global scan_process
-        if scan_process and scan_process.poll() is not None:
+        is_scan = scan_process is not None and scan_process.poll() is None
+        if not is_scan:
             scan_process = None
-        is_scan = scan_process is not None
 
+        is_deauth = deauth_process is not None and deauth_process.poll() is None
+        if not is_deauth:
+            deauth_process = None
+
+        if monitor_process is not None and monitor_process.poll() is not None:
+            monitor_process = None
+        
         return jsonify({
             "status": "success",
-            "is_monitor": is_monitor,
+            "in_monitor": in_monitor,
             "is_deauth": is_deauth,
             "is_scan": is_scan
         })
@@ -114,7 +117,7 @@ def stream():
                 if line:
                     yield f"data: {line}\n\n"
             else:
-                break
+                break  
     return Response(generate(), mimetype='text/event-stream')
 
 if __name__ == '__main__':

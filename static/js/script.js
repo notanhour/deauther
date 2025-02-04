@@ -1,15 +1,7 @@
-scanTimeSlider.addEventListener('input', function() {
-    scanTimeInput.value = scanTimeSlider.value;
-});
+scanTimeField.textContent = scanTimeSlider.value;
 
-scanTimeInput.addEventListener('input', function() {
-    let value = parseInt(scanTimeInput.value);
-    if (value > 60) {
-        scanTimeInput.value = 60;
-    } else if (value < 5) {
-        scanTimeInput.value = 5;
-    }
-    scanTimeSlider.value = value;
+scanTimeSlider.addEventListener('input', function() {
+    scanTimeField.textContent = scanTimeSlider.value;
 });
 
 const eventSource = new EventSource('/stream');
@@ -21,18 +13,19 @@ async function updateContext() {
     const response = await fetch('/check_status', { method: 'GET' });
     const data = await response.json();
     if (data.status == "success") {
-        monitorBtn.textContent = data.is_monitor ? "Переключить в managed mode" : "Переключить в monitor mode";
-        deauthBtn.textContent = data.is_deauth ? "Стоп" : "Начать атаку";
-        scanBtn.disabled = data.is_scan;
+        monitorBtn.textContent = data.in_monitor ? "Переключить на контроль" : "Переключить на мониторинг";
+        deauthBtn.textContent = data.is_deauth ? "Стоп" : "Старт";
+        scanBtn.disabled = !data.in_monitor || data.is_scan || data.is_deauth;
+        deauthBtn.disabled = !data.in_monitor || data.is_scan;
     }
 }
 
 updateContext();
-setInterval(updateContext, 1000);
+setInterval(updateContext, 500);
 
 async function startScan() {
     output.textContent = "";
-    const scanTime = document.getElementById('scanTimeInput').value;
+    const scanTime = document.getElementById('scanTimeField').textContent;
     const response = await fetch('/start_scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,7 +35,7 @@ async function startScan() {
 }
 
 async function toggleDeauth() {
-    if (deauthBtn.textContent == "Начать атаку") {
+    if (deauthBtn.textContent == "Старт") {
         output.textContent = "";
     }
     const targetNetworks = document.getElementById('targetNetworks').value;

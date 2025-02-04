@@ -13,7 +13,7 @@ fi
 INTERFACE=wlp2s0
 
 if [ "$1" == "start" ]; then
-	echo "Проверка на наличие процессов мешающих работе в monitor mode..."
+	echo "Проверка на наличие процессов, мешающих работе в monitor mode..."
 	sudo airmon-ng check kill > /dev/null 2>&1
 	echo "Переключение интерфейса $INTERFACE в monitor mode..."
 	sudo airmon-ng start $INTERFACE > /dev/null 2>&1

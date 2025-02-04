@@ -15,13 +15,13 @@
         <div class="sidebar">
             <div class="btnContainer">
                 <button id="scanBtn" onclick="startScan()">Начать сканирование</button>
-                <button id="deauthBtn" onclick="toggleDeauth()">Начать атаку</button>
-                <button id="monitorBtn" onclick="toggleMonitor()">Переключить в monitor mode</button>
+                <button id="deauthBtn" onclick="toggleDeauth()">Старт</button>
+                <button id="monitorBtn" onclick="toggleMonitor()">Переключить на мониторинг</button>
             </div>
             <div class="inputContainer">
                 <div class="inputGroup">
                     <label for="scanTime">Время сканирования: 
-                        <input type="number" id="scanTimeInput" value="20" min="5" max="60">
+                        <span type="number" id="scanTimeField">20</span>
                         <span>сек</span>
                     </label>
                     <input type="range" id="scanTimeSlider" name="scanTimeSlider" min="5" max="60" value="20">

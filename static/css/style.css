@@ -9,12 +9,12 @@ body {
 
 .titleWrapper {
     width: 100%;
-    background-color: #d4d4d4;
+    background-color: #f4f4f4;
     border-bottom: 2px solid #7c7c7c;
 }
 
 h1 {
-    color: white;
+    color: #7c7c7c;
     text-align: center;
 }
 
@@ -43,6 +43,7 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     margin: 10px 0;
+    border-radius: 10px;
 }
 
 .inputContainer {
@@ -61,15 +62,25 @@ label {
     display: block;
 }
 
+input[type="text"],
+input[type="number"] {
+    padding: 6px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
 .mainContent {
     flex-grow: 1;
     padding: 20px;
 }
 
 pre {
-    background: #f4f4f4;
+    font-size: 14px;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 10px;
+    border-radius: 8px;
     border: 1px solid #ddd;
     height: 100%;
     box-sizing: border-box;
