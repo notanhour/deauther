@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 if [ -z "$(iw dev | grep "Interface" | grep "mon" | awk '{print $2}')" ]; then
-	echo -e "Адаптер не в monitor mode.\r"
+	echo -e "Адаптер не в monitor mode.\r" >&2
 	exit 1
 fi
 
@@ -16,7 +16,7 @@ while getopts "m:n:c:t:" opt; do
 		n) TARGET_ESSIDS="$OPTARG" ;;
 		c) CLIENTS="$OPTARG" ;;
 		t) SCAN_TIME="$OPTARG" ;;
-		*) echo -e "Использование: $0 -m [scan|deauth] -n <ESSID1,ESSID2> -c <CLIENT1,CLIENT2> -t <SCAN_TIME>\r"; exit 1 ;;
+		*) echo -e "Использование: $0 -m [scan|deauth] -n <ESSID_1, ESSID_2> -c <CLIENT_1, CLIENT_2> -t <SCAN_TIME>\r" >&2; sleep 5; exit 1 ;;
 	esac
 done
 
@@ -33,14 +33,41 @@ if [ "$MODE" == "scan" ]; then
 
 	if [ -f "$OUTPUT_DIR/scan-01.csv" ]; then
 		mv "$OUTPUT_DIR/scan-01.csv" "$OUTPUT_DIR/scan.csv"
-		echo -e "Сканирование done. Результаты сохранены в scans/scan.csv.\r"
+		printf "\n"
+		awk -F, '
+			NR > 1 {
+				if ($0 ~ /Station MAC/) exit
+				gsub(/^[ \t]+|[ \t]+$/, "", $1)
+        		gsub(/^[ \t]+|[ \t]+$/, "", $9)
+        		gsub(/^[ \t]+|[ \t]+$/, "", $14)
+				printf "%s\t%s\t%s\n", $1, $9, $14
+			}
+		' "$OUTPUT_DIR/scan.csv" | column -t -s $'\t'
+		printf "\n"
+		awk -F, '
+			BEGIN {
+				found = 0
+			}
+			/Station MAC/ {
+				found = 1
+			} 
+			found {
+				gsub(/^[ \t]+|[ \t]+$/, "", $1)
+        		gsub(/^[ \t]+|[ \t]+$/, "", $6)
+        		gsub(/^[ \t]+|[ \t]+$/, "", $7)
+				printf "%s\t%s\t%s\n", $1, $6, $7
+			}
+		' "$OUTPUT_DIR/scan.csv" | column -t -s $'\t'
+		printf "\n"
+		echo -e "Результаты сканирования сохранены в scans/scan.csv.\r"
 	else
 		echo -e "Сканирование не было завершено.\r"
 	fi
 
 elif [ "$MODE" == "deauth" ]; then
 	if [ ! -s "$OUTPUT_DIR/scan.csv" ]; then
-		echo -e "Запустите сканирование!\r"
+		echo -e "Запустите сканирование!\r" >&2
+		sleep 5  # время для потока на вывод
 		exit 1
 	fi
 
@@ -82,7 +109,8 @@ elif [ "$MODE" == "deauth" ]; then
 	rm "$scan"
 
 	if [ ${#networks[@]} -eq 0 ]; then
-		echo -e "Не найдено целевых сетей.\r"
+		echo -e "Не найдено целевых сетей.\r" >&2
+		sleep 5  # время для потока на вывод
 		exit 1
 	fi
 

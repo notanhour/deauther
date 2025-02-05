@@ -3,8 +3,11 @@ import subprocess
 import signal
 import os
 import sys
+import select
 
-app = Flask(__name__)
+server = Flask(__name__)
+
+loop = None
 
 # Глобальные переменные для хранения PID процесса сканирования и атаки
 scan_process = None
@@ -12,12 +15,12 @@ deauth_process = None
 monitor_process = None
 
 # Главная страница
-@app.route('/')
+@server.route('/')
 def index():
     return render_template('index.html')
 
 # Запуск сканирования
-@app.route('/start_scan', methods=['POST'])
+@server.route('/start_scan', methods=['POST'])
 def start_scan():
     global scan_process
     try:
@@ -33,7 +36,7 @@ def start_scan():
         return jsonify({"status": "error"})
 
 # Атака
-@app.route('/toggle_deauth', methods=['POST'])
+@server.route('/toggle_deauth', methods=['POST'])
 def toggle_deauth():
     global deauth_process
     try:
@@ -54,7 +57,7 @@ def toggle_deauth():
         return jsonify({"status": "error"})
     
 # Переключение monitor mode
-@app.route('/toggle_monitor', methods=['POST'])
+@server.route('/toggle_monitor', methods=['POST'])
 def toggle_monitor():
     global monitor_process
     try:
@@ -73,8 +76,8 @@ def toggle_monitor():
     except Exception as e:
         return jsonify({"status": "error"})
     
-@app.route('/check_status', methods=['GET'])
-def check_status():
+@server.route('/update_status', methods=['GET'])
+def update_status():
     global scan_process, deauth_process, monitor_process
     try:
         check = subprocess.run(['iw', 'dev'], capture_output=True, text=True)
@@ -100,28 +103,61 @@ def check_status():
     except Exception as e:
         return jsonify({"status": "error"})
     
-@app.route('/stream')
+@server.route('/stream')
 def stream():
     def generate():
         while True:
-            if deauth_process:
-                line = deauth_process.stdout.readline()
-                if line:
-                    yield f"data: {line}\n\n"
-            elif scan_process:
-                line = scan_process.stdout.readline()
-                if line:
-                    yield f"data: {line}\n\n"
+            if scan_process:
+                # Используем select для мониторинга stdout и stderr
+                rlist, wlist, xlist = select.select([scan_process.stdout, scan_process.stderr], [], [], 0.1)
+                for stream in rlist:
+                    if stream == scan_process.stdout:
+                        line = scan_process.stdout.readline()
+                        if line:
+                            yield f"data: {line}\n\n"
+                    elif stream == scan_process.stderr:
+                        error = scan_process.stderr.readline()
+                        if error:
+                            yield f"data: {error}\n\n"
+            elif deauth_process:
+                rlist, wlist, xlist = select.select([deauth_process.stdout, deauth_process.stderr], [], [], 0.1)
+                for stream in rlist:
+                    if stream == deauth_process.stdout:
+                        line = deauth_process.stdout.readline()
+                        if line:
+                            yield f"data: {line}\n\n"
+                    elif stream == deauth_process.stderr:
+                        error = deauth_process.stderr.readline()
+                        if error:
+                            yield f"data: {error}\n\n"
             elif monitor_process:
-                line = monitor_process.stdout.readline()
-                if line:
-                    yield f"data: {line}\n\n"
+                rlist, wlist, xlist = select.select([monitor_process.stdout, monitor_process.stderr], [], [], 0.1)
+                for stream in rlist:
+                    if stream == monitor_process.stdout:
+                        line = monitor_process.stdout.readline()
+                        if line:
+                            yield f"data: {line}\n\n"
+                    elif stream == monitor_process.stderr:
+                        error = monitor_process.stderr.readline()
+                        if error:
+                            yield f"data: {error}\n\n"
             else:
-                break  
+                break
     return Response(generate(), mimetype='text/event-stream')
+
+def print_ip():
+    ip = subprocess.run(
+        "ip -4 -o addr show | awk '$2 ~ /^enx/ {print $4}' | cut -d/ -f1",
+        shell=True,
+        capture_output=True,
+        text=True
+    ).stdout.strip()
+    if ip:
+        print(f"IP-адрес интерфейса USB-Ethernet: {ip}")
 
 if __name__ == '__main__':
     print(f"Server running on localhost:5000")
+    print_ip()
     sys.stdout = open(os.devnull, 'w')
     sys.stderr = open(os.devnull, 'w')
-    app.run(host='0.0.0.0', port=5000)
+    server.run(host="0.0.0.0", port=5000)

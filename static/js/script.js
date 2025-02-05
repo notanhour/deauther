@@ -10,13 +10,14 @@ eventSource.onmessage = function(event) {
 };
 
 async function updateContext() {
-    const response = await fetch('/check_status', { method: 'GET' });
+    const response = await fetch('/update_status', { method: 'GET' });
     const data = await response.json();
     if (data.status == "success") {
-        monitorBtn.textContent = data.in_monitor ? "Переключить на контроль" : "Переключить на мониторинг";
+        monitorBtn.textContent = data.in_monitor ? "Переключить на контроль" : "Переключить на монитор";
         deauthBtn.textContent = data.is_deauth ? "Стоп" : "Старт";
         scanBtn.disabled = !data.in_monitor || data.is_scan || data.is_deauth;
         deauthBtn.disabled = !data.in_monitor || data.is_scan;
+        monitorBtn.disabled = data.is_scan || data.is_deauth;
     }
 }
 
