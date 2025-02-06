@@ -29,6 +29,7 @@ sudo visudo
 ```
 
 Add the following lines at the end of the file, replacing username with your actual username:
+Add the following lines at the end of the file, replacing username with your actual username:
 
 ```bash
 username ALL=(ALL) NOPASSWD: /path/to/monitor.sh
@@ -43,7 +44,11 @@ python server.py
 ```
 
 Everything is now set up!
+Everything is now set up!
 
+## Notes
+If the phone is connected to the computer via USB when the server starts, and USB tethering is enabled on the phone while the computer is connected to the shared network, the terminal will display the IP address of the USB-Ethernet interface.
+Knowing this interface address and the port the server is running on, you can access the website from your phone.
 ## Notes
 If the phone is connected to the computer via USB when the server starts, and USB tethering is enabled on the phone while the computer is connected to the shared network, the terminal will display the IP address of the USB-Ethernet interface.
 Knowing this interface address and the port the server is running on, you can access the website from your phone.
