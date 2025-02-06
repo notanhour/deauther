@@ -1,42 +1,49 @@
-# Руководство по установке
+# deauther
 
-## Шаг 1: Создание и активация Virtual Environment
-Перед установкой зависимостей создайте и активируйте Virtual Environment:
+## Requirements
+* Linux
+* A network adapter that supports monitor mode and packet injection
+  
+## Setup
+
+### Step 1: Create and Activate a Virtual Environment
+Before installing dependencies, create and activate a Virtual Environment:
 
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
-## Шаг 2: Установка зависимостей
-Установите необходимые пакеты Python с помощью:
+### Step 2: Install Dependencies
+Install the required Python packages using:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Шаг 3: Настройка sudoers для скриптов
-Чтобы `monitor.sh` и `wifi.sh` запускались без запроса пароля, отредактируйте файл sudoers:
+### Step 3: Configure sudoers for Scripts
+To allow monitor.sh and wifi.sh to run without prompting for a password, edit the sudoers file:
 
 ```bash
 sudo visudo
 ```
 
-Добавьте в конец файла следующие строки, заменив `username` на ваше имя пользователя:
+Add the following lines at the end of the file, replacing username with your actual username:
 
 ```bash
 username ALL=(ALL) NOPASSWD: /path/to/monitor.sh
 username ALL=(ALL) NOPASSWD: /path/to/wifi.sh
 ```
 
-## Шаг 4: Запуск сервера
-Запустите сервер с помощью:
+### Step 4: Start the Server
+Run the server with:
 
 ```bash
 python server.py
 ```
 
-Теперь все готово!
+Everything is now set up!
 
-## Дополнительно
-Если на момент запуска сервера телефон подключен к компьютеру по проводу, на телефоне работает USB-модем и компьютер подключен к сети, раздаваемой телефоном, в терминале появится сообщение с IP-адресом интерфейса USB-Ethernet. Так что, зная адрес этого интерфейса и порт, на котором работает сервер, заходим на сайт с телефона.
+## Notes
+If the phone is connected to the computer via USB when the server starts, and USB tethering is enabled on the phone while the computer is connected to the shared network, the terminal will display the IP address of the USB-Ethernet interface.
+Knowing this interface address and the port the server is running on, you can access the website from your phone.
