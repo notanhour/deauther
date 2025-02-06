@@ -32,7 +32,7 @@ username ALL=(ALL) NOPASSWD: /path/to/monitor.sh
 username ALL=(ALL) NOPASSWD: /path/to/wifi.sh
 ```
 
-## Шаг 4: Запуск сервера
+## Step 4: Start the Server
 Run the server with:
 
 ```bash
