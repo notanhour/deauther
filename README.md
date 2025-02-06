@@ -2,7 +2,7 @@
 * Linux
 * A network adapter that supports monitor mode and packet injection
   
-# Getting Started
+# How to set up
 ## Step 1: Create and Activate a Virtual Environment
 Before installing dependencies, create and activate a Virtual Environment:
 
