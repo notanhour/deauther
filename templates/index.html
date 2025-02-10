@@ -26,11 +26,21 @@
                     <input type="range" id="scanTimeSlider" name="scanTimeSlider" min="5" max="60" value="20">
                 </div>
                 <div class="inputGroup">
-                    <label for="targetNetworks">Сети [через запятую и пробел]</label>
+                    <label for="targetNetworks">Сети
+                        <div class="tooltip">
+                            <span class="question">?</span>
+                            <span class="tooltiptext">Названия сетей через запятую и пробел</span>
+                        </div>
+                    </label>
                     <input type="text" id="targetNetworks" name="targetNetworks">
                 </div>
                 <div class="inputGroup">
-                    <label for="targetClients">Клиенты [через запятую и пробел]</label>
+                    <label for="targetClients">Клиенты
+                        <div class="tooltip">
+                            <span class="question">?</span>
+                            <span class="tooltiptext">MAC-адреса клиентов через запятую и пробел</span>
+                        </div>
+                    </label>
                     <input type="text" id="targetClients" name="targetClients">
                 </div>
             </div>

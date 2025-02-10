@@ -78,14 +78,69 @@ label {
     color: #e0e0e0;
 }
 
-input[type="text"],
-input[type="number"] {
+.question {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: #555;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 140%;
+    left: 50%;
+    margin-left: -40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 25%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+input[type="text"] {
     padding: 6px;
     font-size: 14px;
     border-radius: 8px;
     border: 1px solid #555555;
     background-color: #333333;
     color: #e0e0e0;
+}
+
+input[type="text"]:focus {
+    outline: 2px solid #007bff;
 }
 
 .mainContent {
