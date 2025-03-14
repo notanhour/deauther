@@ -14,6 +14,13 @@ python -m venv venv
 source venv/bin/activate
 ```
 
+### 2. Install the Required Packages
+For it to work, install these:
+
+```bash
+sudo apt install iw aircrack-ng
+```
+
 ### 2. Install Dependencies
 Install the required Python packages using:
 
