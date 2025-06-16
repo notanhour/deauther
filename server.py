@@ -147,7 +147,7 @@ def stream():
 
 def print_ip():
     ip = subprocess.run(
-        "ip -4 -o addr show | awk '$2 ~ /^enx/ {print $4}' | cut -d/ -f1",
+        "ip -4 -o addr show | awk '$2 ~ /^en/ {print $4}' | cut -d/ -f1",
         shell=True,
         capture_output=True,
         text=True
